@@ -13,8 +13,8 @@ const mainMenu = () => {
             case "Add Department, Role, or Employee":
                 addMenu();
                 break;
-            case "View Deperatment, Role or Employee":
-                console.log("Option 2 says Hello");
+            case "View Department, Role or Employee":
+                viewMenu();
                 break;
             case "Updated Employee Roles":
                 console.log("Option 3 says Boo!");
@@ -43,6 +43,33 @@ const addMenu = () => {
                 console.log("Option 2 says Hello");
                 break;
             case "Add Employee":
+                console.log("Option 3 says Boo!");
+                break;
+            // Sends the user back to the main menu.
+            case "Go Back":
+                mainMenu();
+                break;
+        };
+    });
+};
+
+const viewMenu = () => {
+    inquirer.prompt({
+        type: "list",
+        message: "Please choose what you'd like to view.",
+        name: "view",
+        choices: ["View Department", "View Role", "View Employee", "Go Back"]
+    })
+    // {view} is object deconstruction to find menu from inquirer's result.
+    .then(({view}) => {
+        switch (view) {
+            case "View Department":
+                console.log("Option 1 says Hi");
+                break;
+            case "View Role":
+                console.log("Option 2 says Hello");
+                break;
+            case "View Employee":
                 console.log("Option 3 says Boo!");
                 break;
             // Sends the user back to the main menu.
