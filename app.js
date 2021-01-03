@@ -82,6 +82,40 @@ const addDepartment = () => {
     });
 };
 
+const addRole = () => {
+    inquirer.prompt([
+        {
+            type: "input",
+            message: "What is the title of the Role you'd like to add?",
+            name: "roleTitle"
+        },
+        {
+            type: "input",
+            message: "What will the salary be?",
+            name: "roleSalary"
+        },
+        {
+            type: "list",
+            message: "Which department will this role be for?",
+            name: "roleDep",
+            //TODO: Needs to dynamically load in all available departments.
+            choices: ["1", "2", "3"]
+        },
+    ])
+      .then((answer) => {
+          const query = "INSERT INTO role SET ?";
+          connection.query(query, { 
+              title: answer.roleTitle, 
+              salary: answer.roleSalary, 
+              department_id: answer.roleDep
+            }, (err, res) => {
+              if (err) throw err;
+              console.log(`${answer.roleTitle} has been added.`);
+              mainMenu();
+          });
+    });
+};
+
 // Below is the view menu and its three subroutines.
 const viewMenu = () => {
     inquirer.prompt({
@@ -115,7 +149,7 @@ const viewDepartments = () => {
         'SELECT * FROM department', (err, res) => {
           if (err) throw err;
           res.forEach(({ name, id }) => {
-              //todo: This needs to be a console table.
+              //TODO: This needs to be a console table.
             console.log(
               `Department ${id}: ${name}`
             );
@@ -130,8 +164,8 @@ const viewRoles = () => {
         'SELECT * FROM role', (err, res) => {
           if (err) throw err;
           res.forEach(({ title, id, salary }) => {
-              //todo: This needs to be a console table.
-              //todo: Query the name of the department by id.
+              //TODO: This needs to be a console table.
+              //TODO: Query the name of the department by id.
             console.log(
               `Role ${id}: ${title} || Salary: ${salary}`
             );
@@ -146,8 +180,8 @@ const viewEmployees = () => {
         'SELECT * FROM employee', (err, res) => {
           if (err) throw err;
           res.forEach(({ id, first_name, last_name, role_id, manager_id }) => {
-              //todo: This needs to be a console table.
-              //todo: Query the name of the manager & role by id. Display salary and department too.
+              //TODO: This needs to be a console table.
+              //TODO: Query the name of the manager & role by id. Display salary and department too.
             console.log(
               `Employee ${id}: ${first_name} ${last_name}`
             );
