@@ -155,9 +155,10 @@ const viewDepartments = () => {
     );
 };
 
+// ID | Title | Salary | Department
 const viewRoles = () => {
-    //Query for Role table. Includes foreign keyed info from department.
-    const query = "SELECT *, role.id FROM role INNER JOIN department ON role.department_id = department.id"
+    //Query for Role table. Includes foreign keyed info from Department table.
+    const query = "SELECT *, role.id FROM role INNER JOIN department ON role.department_id = department.id";
     //This is us connecting & quering MySQL.
     connection.query(
         query, (err, res) => {
@@ -170,11 +171,17 @@ const viewRoles = () => {
     );
 };
 
+// ID | First | Last | Role Title | Dep | Salary | Manager
 const viewEmployees = () => {
+    //Query for Employee table. Includes info from Department and Role table.
+    const query = "SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department, role.salary, IFNULL(CONCAT(manager.first_name,' ', manager.last_name), 'Top Manager') AS 'manager' FROM employee INNER JOIN role ON employee.role_id = role.id INNER JOIN department ON role.department_id = department.id LEFT JOIN employee manager ON manager.id = employee.manager_id";
+    //This is us connecting & quering MySQL.    
     connection.query(
-        "SELECT * FROM employee", (err, res) => {
+        query, (err, res) => {
           if (err) throw err;
+            //This is using the console.table NPM to display the info.
             console.table(res);
+            //Returns back to the Main Menu when done.
             mainMenu();
         }
     );
