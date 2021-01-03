@@ -92,18 +92,21 @@ const viewMenu = () => {
     });
 };
 
-// const addDepartment = () => {
-//     inquirer.prompt({
-//         type: "input",
-//         message: "What is the name of the department you'd like to add?",
-//         name: "departmentName"
-//       })
-//       .then(({departmentName}) => {
-//           connection.query("INSERT INTO department SET ?", {departmentName});
-//           console.log(`${departmentName} has been added.`);
-//           mainMenu();
-//         });
-// };
+const addDepartment = () => {
+    inquirer.prompt({
+        type: "input",
+        message: "What is the name of the department you'd like to add?",
+        name: "departmentName"
+    })
+      .then(({ departmentName }) => {
+          const query = "INSERT INTO department SET ?";
+          connection.query(query, {name: departmentName}, (err, res) => {
+              if (err) throw err;
+              console.log(`${departmentName} has been added.`);
+              mainMenu();
+          });
+    });
+};
 
 const viewDepartment = () => {
     connection.query(
