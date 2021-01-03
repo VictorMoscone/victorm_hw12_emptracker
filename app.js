@@ -38,6 +38,7 @@ const mainMenu = () => {
     });
 };
 
+//Below is the add menu and its three subroutines.
 const addMenu = () => {
     inquirer.prompt({
         type: "list",
@@ -52,36 +53,9 @@ const addMenu = () => {
                 addDepartment();
                 break;
             case "Add Role":
-                console.log("Option 2 says Hello");
+                addRole();
                 break;
             case "Add Employee":
-                console.log("Option 3 says Boo!");
-                break;
-            // Sends the user back to the main menu.
-            case "Go Back":
-                mainMenu();
-                break;
-        };
-    });
-};
-
-const viewMenu = () => {
-    inquirer.prompt({
-        type: "list",
-        message: "Please choose what you'd like to view.",
-        name: "view",
-        choices: ["View Department", "View Role", "View Employee", "Go Back"]
-    })
-    // {view} is object deconstruction to find menu from inquirer's result.
-    .then(({view}) => {
-        switch (view) {
-            case "View Departments":
-                viewDepartments();
-                break;
-            case "View Roles":
-                viewRoles();
-                break;
-            case "View Employees":
                 console.log("Option 3 says Boo!");
                 break;
             // Sends the user back to the main menu.
@@ -108,6 +82,34 @@ const addDepartment = () => {
     });
 };
 
+// Below is the view menu and its three subroutines.
+const viewMenu = () => {
+    inquirer.prompt({
+        type: "list",
+        message: "Please choose what you'd like to view.",
+        name: "view",
+        choices: ["View Departments", "View Roles", "View Employees", "Go Back"]
+    })
+    // {view} is object deconstruction to find menu from inquirer's result.
+    .then(({view}) => {
+        switch (view) {
+            case "View Departments":
+                viewDepartments();
+                break;
+            case "View Roles":
+                viewRoles();
+                break;
+            case "View Employees":
+                viewEmployees();
+                break;
+            // Sends the user back to the main menu.
+            case "Go Back":
+                mainMenu();
+                break;
+        };
+    });
+};
+
 const viewDepartments = () => {
     connection.query(
         'SELECT * FROM department', (err, res) => {
@@ -129,9 +131,25 @@ const viewRoles = () => {
           if (err) throw err;
           res.forEach(({ title, id, salary }) => {
               //todo: This needs to be a console table.
-              //wishlist: Query the name of the department by id.
+              //todo: Query the name of the department by id.
             console.log(
               `Role ${id}: ${title} || Salary: ${salary}`
+            );
+          });
+          mainMenu();
+        }
+    );
+};
+
+const viewEmployees = () => {
+    connection.query(
+        'SELECT * FROM employee', (err, res) => {
+          if (err) throw err;
+          res.forEach(({ id, first_name, last_name, role_id, manager_id }) => {
+              //todo: This needs to be a console table.
+              //todo: Query the name of the manager & role by id. Display salary and department too.
+            console.log(
+              `Employee ${id}: ${first_name} ${last_name}`
             );
           });
           mainMenu();
