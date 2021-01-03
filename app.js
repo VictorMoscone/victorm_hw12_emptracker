@@ -16,7 +16,7 @@ const mainMenu = () => {
         type: "list",
         message: "What would you like to do?",
         name: "menu",
-        choices: ["Add Department, Role, or Employee", "View Deperatment, Role or Employee", "Updated Employee Roles", "Quit"]
+        choices: ["Add Department, Role, or Employee", "View Department, Role or Employee", "Updated Employee Roles", "Quit"]
     })
     // {menu} is object deconstruction to find menu from inquirer's result.
     .then(({menu}) => {
@@ -32,6 +32,7 @@ const mainMenu = () => {
                 break;
             // Ends the program.
             case "Quit":
+                connection.end();
                 break;
         };
     });
@@ -75,7 +76,7 @@ const viewMenu = () => {
     .then(({view}) => {
         switch (view) {
             case "View Department":
-                console.log("Option 1 says Hi");
+                viewDepartment();
                 break;
             case "View Role":
                 console.log("Option 2 says Hello");
@@ -103,6 +104,23 @@ const viewMenu = () => {
 //           mainMenu();
 //         });
 // };
+
+// const viewDepartment = () => {
+//     connection.query(
+//         'SELECT * FROM department', (err, res) => {
+//           if (err) throw err;
+//           console.log(res);
+//           res.forEach(({ name }) => {
+//             console.log(
+//               `Test: ${name}`
+//             );
+//           });
+//         }
+//     );
+//     mainMenu();
+// }
+
+
 
 connection.connect((err) => {
     if (err) throw err;
