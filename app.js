@@ -105,22 +105,19 @@ const viewMenu = () => {
 //         });
 // };
 
-// const viewDepartment = () => {
-//     connection.query(
-//         'SELECT * FROM department', (err, res) => {
-//           if (err) throw err;
-//           console.log(res);
-//           res.forEach(({ name }) => {
-//             console.log(
-//               `Test: ${name}`
-//             );
-//           });
-//         }
-//     );
-//     mainMenu();
-// }
-
-
+const viewDepartment = () => {
+    connection.query(
+        'SELECT * FROM department', (err, res) => {
+          if (err) throw err;
+          res.forEach(({ name, id }) => {
+            console.log(
+              `Department ${id}: ${name}`
+            );
+          });
+          mainMenu();
+        }
+    );
+};
 
 connection.connect((err) => {
     if (err) throw err;
