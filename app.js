@@ -147,7 +147,7 @@ const viewMenu = () => {
 
 const viewDepartments = () => {
     connection.query(
-        'SELECT * FROM department', (err, res) => {
+        "SELECT * FROM department", (err, res) => {
           if (err) throw err;
             console.table(res);
             mainMenu();
@@ -156,10 +156,15 @@ const viewDepartments = () => {
 };
 
 const viewRoles = () => {
+    //Query for Role table. Includes foreign keyed info from department.
+    const query = "SELECT *, role.id FROM role INNER JOIN department ON role.department_id = department.id"
+    //This is us connecting & quering MySQL.
     connection.query(
-        'SELECT * FROM role', (err, res) => {
+        query, (err, res) => {
           if (err) throw err;
+            //This is using the console.table NPM to display the info.
             console.table(res);
+            //Returns back to the Main Menu when done.
             mainMenu();
         }
     );
@@ -167,7 +172,7 @@ const viewRoles = () => {
 
 const viewEmployees = () => {
     connection.query(
-        'SELECT * FROM employee', (err, res) => {
+        "SELECT * FROM employee", (err, res) => {
           if (err) throw err;
             console.table(res);
             mainMenu();
