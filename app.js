@@ -3,7 +3,6 @@ const mysql = require('mysql');
 
 const connection = mysql.createConnection({
     host: 'localhost',
-  
     port: 3306,
   
     user: 'root',
@@ -49,7 +48,7 @@ const addMenu = () => {
     .then(({add}) => {
         switch (add) {
             case "Add Department":
-                console.log("Option 1 says Hi");
+                addDepartment();
                 break;
             case "Add Role":
                 console.log("Option 2 says Hello");
@@ -91,6 +90,19 @@ const viewMenu = () => {
         };
     });
 };
+
+// const addDepartment = () => {
+//     inquirer.prompt({
+//         type: "input",
+//         message: "What is the name of the department you'd like to add?",
+//         name: "departmentName"
+//       })
+//       .then(({departmentName}) => {
+//           connection.query("INSERT INTO department SET ?", {departmentName});
+//           console.log(`${departmentName} has been added.`);
+//           mainMenu();
+//         });
+// };
 
 connection.connect((err) => {
     if (err) throw err;
