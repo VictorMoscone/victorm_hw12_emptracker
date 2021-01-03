@@ -158,7 +158,7 @@ const viewDepartments = () => {
 // ID | Title | Salary | Department
 const viewRoles = () => {
     //Query for Role table. Includes foreign keyed info from Department table.
-    const query = "SELECT *, role.id FROM role INNER JOIN department ON role.department_id = department.id";
+    const query = "SELECT role.id, role.title, role.salary, department.name AS department FROM role INNER JOIN department ON role.department_id = department.id";
     //This is us connecting & quering MySQL.
     connection.query(
         query, (err, res) => {
