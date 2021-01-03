@@ -75,13 +75,13 @@ const viewMenu = () => {
     // {view} is object deconstruction to find menu from inquirer's result.
     .then(({view}) => {
         switch (view) {
-            case "View Department":
-                viewDepartment();
+            case "View Departments":
+                viewDepartments();
                 break;
-            case "View Role":
-                console.log("Option 2 says Hello");
+            case "View Roles":
+                viewRoles();
                 break;
-            case "View Employee":
+            case "View Employees":
                 console.log("Option 3 says Boo!");
                 break;
             // Sends the user back to the main menu.
@@ -108,13 +108,30 @@ const addDepartment = () => {
     });
 };
 
-const viewDepartment = () => {
+const viewDepartments = () => {
     connection.query(
         'SELECT * FROM department', (err, res) => {
           if (err) throw err;
           res.forEach(({ name, id }) => {
+              //todo: This needs to be a console table.
             console.log(
               `Department ${id}: ${name}`
+            );
+          });
+          mainMenu();
+        }
+    );
+};
+
+const viewRoles = () => {
+    connection.query(
+        'SELECT * FROM role', (err, res) => {
+          if (err) throw err;
+          res.forEach(({ title, id, salary }) => {
+              //todo: This needs to be a console table.
+              //wishlist: Query the name of the department by id.
+            console.log(
+              `Role ${id}: ${title} || Salary: ${salary}`
             );
           });
           mainMenu();
