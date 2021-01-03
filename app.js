@@ -149,13 +149,8 @@ const viewDepartments = () => {
     connection.query(
         'SELECT * FROM department', (err, res) => {
           if (err) throw err;
-          res.forEach(({ name, id }) => {
-              //TODO: This needs to be a console table.
-            console.log(
-              `Department ${id}: ${name}`
-            );
-          });
-          mainMenu();
+            console.table(res);
+            mainMenu();
         }
     );
 };
@@ -164,14 +159,8 @@ const viewRoles = () => {
     connection.query(
         'SELECT * FROM role', (err, res) => {
           if (err) throw err;
-          res.forEach(({ title, id, salary }) => {
-              //TODO: This needs to be a console table.
-              //TODO: Query the name of the department by id.
-            console.log(
-              `Role ${id}: ${title} || Salary: ${salary}`
-            );
-          });
-          mainMenu();
+            console.table(res);
+            mainMenu();
         }
     );
 };
@@ -180,14 +169,8 @@ const viewEmployees = () => {
     connection.query(
         'SELECT * FROM employee', (err, res) => {
           if (err) throw err;
-          res.forEach(({ id, first_name, last_name, role_id, manager_id }) => {
-              //TODO: This needs to be a console table.
-              //TODO: Query the name of the manager & role by id. Display salary and department too.
-            console.log(
-              `Employee ${id}: ${first_name} ${last_name}`
-            );
-          });
-          mainMenu();
+            console.table(res);
+            mainMenu();
         }
     );
 };
