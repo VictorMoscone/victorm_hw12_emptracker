@@ -99,8 +99,7 @@ const addRole = () => {
             type: "list",
             message: "Which department will this role be for?",
             name: "roleDep",
-            //TODO: Needs to dynamically load in all available departments.
-            choices: ["1", "2", "3"]
+            choices: checkTable("department", "name"),
         },
     ])
       .then((answer) => {
@@ -133,15 +132,14 @@ const addEmployee = () => {
             type: "list",
             message: "What is their role?",
             name: "employeeRole",
-            //TODO: Needs to dynamically load in all available roles.
-            choices: checkTable(),
+            choices: checkTable("role", "title"),
         },
         {
             type: "list",
             message: "Who is their manager?",
             name: "employeeManager",
             //TODO: Needs to dynamically load in all available managers.
-            choices: ["1", "2", "3"]
+            choices: [1, 2, 3]
         },
     ])
       .then((answer) => {
@@ -158,11 +156,13 @@ const addEmployee = () => {
     });
 };
 
-const checkTable = () => {
-    const query = "SELECT role.title FROM role";
+const checkTable = (type, subtype) => {
+    const query = `SELECT ?? FROM ??`;
     let tableArray = [];
     connection.query(
-        query, (err, res) => {
+        query,
+        [`${type}.${subtype}`, type],
+        (err, res) => {
           if (err) throw err;
           for (let i = 0; i < res.length; i++) {
               tableArray.push(res[i].title);
