@@ -165,7 +165,9 @@ const checkTable = (type, subtype) => {
         (err, res) => {
           if (err) throw err;
           for (let i = 0; i < res.length; i++) {
-              tableArray.push(res[i].title);
+              console.log(tableArray)
+              //TODO: Fix why this works for one and not the other.
+              tableArray.push(res[i]);
           };
         }
     );
@@ -246,6 +248,10 @@ const viewEmployees = () => {
             mainMenu();
         }
     );
+};
+
+const updateMenu = () => {
+    
 };
 
 connection.connect((err) => {
