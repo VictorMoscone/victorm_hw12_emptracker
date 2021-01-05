@@ -57,7 +57,7 @@ const addMenu = () => {
                 addRole();
                 break;
             case "Add Employee":
-                console.log("Option 3 says Boo!");
+                addEmployee();
                 break;
             // Sends the user back to the main menu.
             case "Go Back":
@@ -117,6 +117,61 @@ const addRole = () => {
     });
 };
 
+const addEmployee = () => {
+    inquirer.prompt([
+        {
+            type: "input",
+            message: "What is their first name?",
+            name: "employeeFirst"
+        },
+        {
+            type: "input",
+            message: "What is their last name?",
+            name: "employeeLast"
+        },
+        {
+            type: "list",
+            message: "What is their role?",
+            name: "employeeRole",
+            //TODO: Needs to dynamically load in all available roles.
+            choices: checkTable(),
+        },
+        {
+            type: "list",
+            message: "Who is their manager?",
+            name: "employeeManager",
+            //TODO: Needs to dynamically load in all available managers.
+            choices: ["1", "2", "3"]
+        },
+    ])
+      .then((answer) => {
+          const query = "INSERT INTO employee SET ?";
+          connection.query(query, { 
+              title: answer.roleTitle, 
+              salary: answer.roleSalary, 
+              department_id: answer.roleDep
+            }, (err, res) => {
+              if (err) throw err;
+              console.log(`${answer.roleTitle} has been added.`);
+              mainMenu();
+          });
+    });
+};
+
+const checkTable = () => {
+    const query = "SELECT role.title FROM role";
+    let tableArray = [];
+    connection.query(
+        query, (err, res) => {
+          if (err) throw err;
+          for (let i = 0; i < res.length; i++) {
+              tableArray.push(res[i].title);
+          };
+        }
+    );
+    return tableArray;
+};
+
 // Below is the view menu and its three subroutines.
 const viewMenu = () => {
     inquirer.prompt({
@@ -145,11 +200,17 @@ const viewMenu = () => {
     });
 };
 
+// ID | Name
 const viewDepartments = () => {
+    //Query for Department table.
+    const query = "SELECT * FROM department";
+    //This is us connecting and querying MySQL.
     connection.query(
-        "SELECT * FROM department", (err, res) => {
+        query, (err, res) => {
           if (err) throw err;
+            //This is using the console.table NPM to display the info.
             console.table(res);
+            //Returns back to the Main Menu when done.
             mainMenu();
         }
     );
@@ -159,7 +220,7 @@ const viewDepartments = () => {
 const viewRoles = () => {
     //Query for Role table. Includes foreign keyed info from Department table.
     const query = "SELECT role.id, role.title, role.salary, department.name AS department FROM role INNER JOIN department ON role.department_id = department.id";
-    //This is us connecting & quering MySQL.
+    //This is us connecting & querying MySQL.
     connection.query(
         query, (err, res) => {
           if (err) throw err;
@@ -175,7 +236,7 @@ const viewRoles = () => {
 const viewEmployees = () => {
     //Query for Employee table. Includes info from Department and Role table.
     const query = "SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department, role.salary, IFNULL(CONCAT(manager.first_name,' ', manager.last_name), 'Top Manager') AS 'manager' FROM employee INNER JOIN role ON employee.role_id = role.id INNER JOIN department ON role.department_id = department.id LEFT JOIN employee manager ON manager.id = employee.manager_id";
-    //This is us connecting & quering MySQL.    
+    //This is us connecting & querying MySQL.    
     connection.query(
         query, (err, res) => {
           if (err) throw err;
