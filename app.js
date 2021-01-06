@@ -170,8 +170,14 @@ const addEmployee = () => {
                     type: "list",
                     message: "Who is their manager?",
                     name: "employeeManager",
-                    //TODO: Needs to dynamically load in all available managers.
-                    choices: [1, 2, 3]
+                    choices: () => {
+                        const tableArray = [];
+                        for (let i = 0; i < resEmp.length; i++) {
+                            //This looks at each full name from the employee query and adds their name to an array.
+                            tableArray.push(`${resEmp[i].first_name} ${resEmp[i].last_name}`);
+                        };
+                        return tableArray;
+                    },
                 },
             ])
               .then((answer) => {
