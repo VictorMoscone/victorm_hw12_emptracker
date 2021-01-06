@@ -2,6 +2,7 @@ const inquirer = require("inquirer");
 const mysql = require('mysql');
 const cTable = require('console.table');
 const { table } = require("console");
+const { connect } = require("http2");
 
 const connection = mysql.createConnection({
     host: 'localhost',
@@ -287,27 +288,66 @@ const viewEmployees = () => {
 };
 
 const updateMenu = () => {
-    connection.query("SELECT * FROM employee", (err, res) => {
-        inquirer.prompt([
-            {
-                type: "list",
-                message: "Which employee would you like to update?",
-                name: "employeeList",
-                choices: () => {
-                    const tableArray = [];
-                    for (let i = 0; i < res.length; i++) {
-                        //This looks at each full name from the employee query and adds their name to an array.
-                        tableArray.push(`${res[i].first_name} ${res[i].last_name}`);
-                    };
-                    return tableArray;
+    connection.query("SELECT * FROM employee", (err, resEmp) => {
+        if (err) throw err;
+        connection.query("SELECT * FROM role", (err, resRole) => {
+            if (err) throw err;
+            inquirer.prompt([
+                {
+                    type: "list",
+                    message: "Which employee would you like to update?",
+                    name: "employeeList",
+                    choices: () => {
+                        const tableArray = [];
+                        for (let i = 0; i < resEmp.length; i++) {
+                            //This looks at each full name from the employee query and adds their name to an array.
+                            tableArray.push(`${resEmp[i].first_name} ${resEmp[i].last_name}`);
+                        };
+                        return tableArray;
+                    },
                 },
-            },
-        ])
-        .then((answer) => {
-            //TODO: Do this.
-            // const query = `UPDATE employee SET role_id = `;
+                {
+                    type: "list",
+                    message: "What role should they be?",
+                    name: "roleList",
+                    choices: () => {
+                        const tableArray = [];
+                        for (let i = 0; i < resRole.length; i++) {
+                            //This looks at each full name from the employee query and adds their name to an array.
+                            tableArray.push(resRole[i].title);
+                        };
+                        return tableArray;
+                    },
+                },
+            ])
+            .then((answer) => {
+                // The answer comes as a two word string, we split it into two separate array values.
+                let fullName = answer.employeeList.split(" ");
+                let firstName = fullName[0];
+                let lastName = fullName[1];
+
+                let roleID;
+                //Forloop that compares the Role name to the query and finds the relative Id.
+                for (let i = 0; i < resRole.length; i++) {
+                    if (resRole[i].title === answer.roleList) {
+                        roleID = resRole[i].id;
+                    };
+                };
+                // Here, we use the roleID found above and the split name to update.
+                connection.query("UPDATE employee SET ? WHERE ? AND ?",
+                [
+                    { role_id: roleID },
+                    { first_name: firstName},
+                    { last_name: lastName},
+                ],
+                (err, res) => {
+                    if (err) throw err;
+                    console.log(`${firstName}'s role has been updated to ${answer.roleList}!`)
+                    mainMenu();
+                });
+            });
         });
-    })
+    });
 };
 
 connection.connect((err) => {
