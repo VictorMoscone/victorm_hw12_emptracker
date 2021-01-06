@@ -85,7 +85,7 @@ const addDepartment = () => {
 };
 
 const addRole = () => {
-    connection.query("SELECT department.name FROM department", (err, res) => {
+    connection.query("SELECT * FROM department", (err, res) => {
         if (err) throw err;
         inquirer.prompt([
             {
@@ -112,11 +112,17 @@ const addRole = () => {
             },
         ])
           .then((answer) => {
+              let roleDepID;
+              for (let i = 0; i < res.length; i++) {
+                  if (res[i].name === answer.roleDep) {
+                      roleDepID = res[i].id;
+                  };
+              };
               const query = "INSERT INTO role SET ?";
               connection.query(query, { 
                   title: answer.roleTitle, 
                   salary: answer.roleSalary, 
-                  department_id: answer.roleDep
+                  department_id: roleDepID,
                 }, (err, res) => {
                   if (err) throw err;
                   console.log(`${answer.roleTitle} has been added.`);
