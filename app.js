@@ -142,8 +142,6 @@ const addEmployee = () => {
     connection.query("SELECT * FROM employee", (err, resEmp) => {
         if (err) throw err;
         connection.query("SELECT * FROM role", (err, resRole) => {
-            console.log(resEmp)
-            console.log(resRole)
             inquirer.prompt([
                 {
                     type: "input",
@@ -159,8 +157,14 @@ const addEmployee = () => {
                     type: "list",
                     message: "What is their role?",
                     name: "employeeRole",
-                    //TODO: Fix this.
-                    choices: "test"
+                    choices: () => {
+                        const tableArray = [];
+                        for (let i = 0; i < resRole.length; i++) {
+                            //This looks at each Title from the Role query and adds their name to an array.
+                            tableArray.push(resRole[i].title);
+                        };
+                        return tableArray;
+                    },
                 },
                 {
                     type: "list",
