@@ -286,21 +286,28 @@ const viewEmployees = () => {
     );
 };
 
-//TODO: This whole thing is busted because of checkTable yayyy.
 const updateMenu = () => {
-    inquirer.prompt([
-        {
-            type: "list",
-            message: "Which employee would you like to update?",
-            name: "employeeList",
-            //TODO: Fix this.
-            choices: "test",
-        },
-    ])
-    .then((answer) => {
-        //TODO: Do this.
-        // const query = `UPDATE employee SET role_id = `;
-    });
+    connection.query("SELECT * FROM employee", (err, res) => {
+        inquirer.prompt([
+            {
+                type: "list",
+                message: "Which employee would you like to update?",
+                name: "employeeList",
+                choices: () => {
+                    const tableArray = [];
+                    for (let i = 0; i < res.length; i++) {
+                        //This looks at each full name from the employee query and adds their name to an array.
+                        tableArray.push(`${res[i].first_name} ${res[i].last_name}`);
+                    };
+                    return tableArray;
+                },
+            },
+        ])
+        .then((answer) => {
+            //TODO: Do this.
+            // const query = `UPDATE employee SET role_id = `;
+        });
+    })
 };
 
 connection.connect((err) => {
