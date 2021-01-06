@@ -139,43 +139,51 @@ const addRole = () => {
 };
 
 const addEmployee = () => {
-        inquirer.prompt([
-            {
-                type: "input",
-                message: "What is their first name?",
-                name: "employeeFirst"
-            },
-            {
-                type: "input",
-                message: "What is their last name?",
-                name: "employeeLast"
-            },
-            {
-                type: "list",
-                message: "What is their role?",
-                name: "employeeRole",
-                choices: "test"
-            },
-            {
-                type: "list",
-                message: "Who is their manager?",
-                name: "employeeManager",
-                //TODO: Needs to dynamically load in all available managers.
-                choices: [1, 2, 3]
-            },
-        ])
-          .then((answer) => {
-              const query = "INSERT INTO employee SET ?";
-              connection.query(query, { 
-                  title: answer.roleTitle, 
-                  salary: answer.roleSalary, 
-                  department_id: answer.roleDep
-                }, (err, res) => {
-                  if (err) throw err;
-                  console.log(`${answer.roleTitle} has been added.`);
-                  mainMenu();
-              });
-        });
+    connection.query("SELECT * FROM employee", (err, resEmp) => {
+        if (err) throw err;
+        connection.query("SELECT * FROM role", (err, resRole) => {
+            console.log(resEmp)
+            console.log(resRole)
+            inquirer.prompt([
+                {
+                    type: "input",
+                    message: "What is their first name?",
+                    name: "employeeFirst"
+                },
+                {
+                    type: "input",
+                    message: "What is their last name?",
+                    name: "employeeLast"
+                },
+                {
+                    type: "list",
+                    message: "What is their role?",
+                    name: "employeeRole",
+                    //TODO: Fix this.
+                    choices: "test"
+                },
+                {
+                    type: "list",
+                    message: "Who is their manager?",
+                    name: "employeeManager",
+                    //TODO: Needs to dynamically load in all available managers.
+                    choices: [1, 2, 3]
+                },
+            ])
+              .then((answer) => {
+                  const query = "INSERT INTO employee SET ?";
+                  connection.query(query, { 
+                      title: answer.roleTitle, 
+                      salary: answer.roleSalary, 
+                      department_id: answer.roleDep
+                    }, (err, res) => {
+                      if (err) throw err;
+                      console.log(`${answer.roleTitle} has been added.`);
+                      mainMenu();
+                  });
+            });
+        })
+    })    
 };
 
 // Below is the view menu and its three subroutines.
@@ -261,10 +269,12 @@ const updateMenu = () => {
             type: "list",
             message: "Which employee would you like to update?",
             name: "employeeList",
-            choices: checkTable("employee", "first_name"),
+            //TODO: Fix this.
+            choices: "test",
         },
     ])
     .then((answer) => {
+        //TODO: Do this.
         // const query = `UPDATE employee SET role_id = `;
     });
 };
