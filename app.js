@@ -17,7 +17,7 @@ const mainMenu = () => {
         type: "list",
         message: "What would you like to do?",
         name: "menu",
-        choices: ["Add Department, Role, or Employee", "View Department, Role or Employee", "Updated Employee Roles", "Quit"]
+        choices: ["Add Department, Role, or Employee", "View Department, Role or Employee", "Update Employee Roles", "Quit"]
     })
     // {menu} is object deconstruction to find menu from inquirer's result.
     .then(({menu}) => {
@@ -28,8 +28,8 @@ const mainMenu = () => {
             case "View Department, Role or Employee":
                 viewMenu();
                 break;
-            case "Updated Employee Roles":
-                console.log("Option 3 says Boo!");
+            case "Update Employee Roles":
+                updateMenu();
                 break;
             // Ends the program.
             case "Quit":
@@ -117,61 +117,44 @@ const addRole = () => {
 };
 
 const addEmployee = () => {
-    inquirer.prompt([
-        {
-            type: "input",
-            message: "What is their first name?",
-            name: "employeeFirst"
-        },
-        {
-            type: "input",
-            message: "What is their last name?",
-            name: "employeeLast"
-        },
-        {
-            type: "list",
-            message: "What is their role?",
-            name: "employeeRole",
-            choices: checkTable("role", "title"),
-        },
-        {
-            type: "list",
-            message: "Who is their manager?",
-            name: "employeeManager",
-            //TODO: Needs to dynamically load in all available managers.
-            choices: [1, 2, 3]
-        },
-    ])
-      .then((answer) => {
-          const query = "INSERT INTO employee SET ?";
-          connection.query(query, { 
-              title: answer.roleTitle, 
-              salary: answer.roleSalary, 
-              department_id: answer.roleDep
-            }, (err, res) => {
-              if (err) throw err;
-              console.log(`${answer.roleTitle} has been added.`);
-              mainMenu();
-          });
-    });
-};
-
-const checkTable = (type, subtype) => {
-    const query = `SELECT ?? FROM ??`;
-    let tableArray = [];
-    connection.query(
-        query,
-        [`${type}.${subtype}`, type],
-        (err, res) => {
-          if (err) throw err;
-          for (let i = 0; i < res.length; i++) {
-              console.log(tableArray)
-              //TODO: Fix why this works for one and not the other.
-              tableArray.push(res[i]);
-          };
-        }
-    );
-    return tableArray;
+        inquirer.prompt([
+            {
+                type: "input",
+                message: "What is their first name?",
+                name: "employeeFirst"
+            },
+            {
+                type: "input",
+                message: "What is their last name?",
+                name: "employeeLast"
+            },
+            {
+                type: "list",
+                message: "What is their role?",
+                name: "employeeRole",
+                choices: "test",
+            },
+            {
+                type: "list",
+                message: "Who is their manager?",
+                name: "employeeManager",
+                //TODO: Needs to dynamically load in all available managers.
+                choices: [1, 2, 3]
+            },
+        ])
+          .then((answer) => {
+              const query = "INSERT INTO employee SET ?";
+              connection.query(query, { 
+                  title: answer.roleTitle, 
+                  salary: answer.roleSalary, 
+                  department_id: answer.roleDep
+                }, (err, res) => {
+                  if (err) throw err;
+                  console.log(`${answer.roleTitle} has been added.`);
+                  mainMenu();
+              });
+        });
+    })
 };
 
 // Below is the view menu and its three subroutines.
@@ -250,9 +233,36 @@ const viewEmployees = () => {
     );
 };
 
+//TODO: This whole thing is busted because of checkTable yayyy.
 const updateMenu = () => {
-    
+    inquirer.prompt([
+        {
+            type: "list",
+            message: "Which employee would you like to update?",
+            name: "employeeList",
+            choices: checkTable("employee", "first_name"),
+        },
+    ])
+    .then((answer) => {
+        // const query = `UPDATE employee SET role_id = `;
+    });
 };
+
+// const checkTable = (type, subtype) => {
+//     const query = `SELECT ${type}.${subtype} FROM ${type}`;
+//     let tableArray = [];
+//     connection.query(
+//         query,
+//         (err, res) => {
+//           if (err) throw err;
+//           for (let i = 0; i < res.length; i++) {
+//               //TODO: Fix why this works for one and not the other.
+//               tableArray.push(res[i]);
+//           };
+//         }
+//     );
+//     return tableArray;
+// };
 
 connection.connect((err) => {
     if (err) throw err;
