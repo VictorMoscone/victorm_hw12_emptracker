@@ -85,6 +85,7 @@ const addDepartment = () => {
 };
 
 const addRole = () => {
+    // We query all of the rows/colums from the department table.
     connection.query("SELECT * FROM department", (err, res) => {
         if (err) throw err;
         inquirer.prompt([
@@ -102,9 +103,11 @@ const addRole = () => {
                 type: "list",
                 message: "Which department will this role be for?",
                 name: "roleDep",
+                // Here, we want the list to dynamically populate with all departments.
                 choices: () => {
                     const tableArray = [];
                     for (let i = 0; i < res.length; i++) {
+                        //This looks at each Dep from the query and adds their name to an array.
                         tableArray.push(res[i].name);
                     };
                     return tableArray;
@@ -113,11 +116,14 @@ const addRole = () => {
         ])
           .then((answer) => {
               let roleDepID;
+              //Forloop that compares the department name to the query and finds the relative Id.
               for (let i = 0; i < res.length; i++) {
                   if (res[i].name === answer.roleDep) {
                       roleDepID = res[i].id;
                   };
               };
+
+              //Using the answers we received and the department id, we insert into the role table.
               const query = "INSERT INTO role SET ?";
               connection.query(query, { 
                   title: answer.roleTitle, 
@@ -262,22 +268,6 @@ const updateMenu = () => {
         // const query = `UPDATE employee SET role_id = `;
     });
 };
-
-// const checkTable = (type, subtype) => {
-//     const query = `SELECT ${type}.${subtype} FROM ${type}`;
-//     let tableArray = [];
-//     connection.query(
-//         query,
-//         (err, res) => {
-//           if (err) throw err;
-//           for (let i = 0; i < res.length; i++) {
-//               //TODO: Fix why this works for one and not the other.
-//               tableArray.push(res[i]);
-//           };
-//         }
-//     );
-//     return tableArray;
-// };
 
 connection.connect((err) => {
     if (err) throw err;
