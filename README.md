@@ -42,6 +42,7 @@ Holy cow, was this assignment frustrating. A majority of the assignment was a br
 * Primary Usage: View/Add departments, roles and employees to your org.
 * Seen below -
 
+[![YouTube Video Tutorial](https://img.youtube.com/vi/LGMdEn96t4I/0.jpg)](https://www.youtube.com/watch?LGMdEn96t4I)
 
 
 ### **Contributing**
