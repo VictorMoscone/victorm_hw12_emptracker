@@ -122,7 +122,6 @@ const addRole = () => {
                       roleDepID = res[i].id;
                   };
               };
-
               //Using the answers we received and the department id, we insert into the role table.
               const query = "INSERT INTO role SET ?";
               connection.query(query, { 
@@ -181,16 +180,31 @@ const addEmployee = () => {
                 },
             ])
               .then((answer) => {
-                  const query = "INSERT INTO employee SET ?";
-                  connection.query(query, { 
-                      title: answer.roleTitle, 
-                      salary: answer.roleSalary, 
-                      department_id: answer.roleDep
-                    }, (err, res) => {
-                      if (err) throw err;
-                      console.log(`${answer.roleTitle} has been added.`);
-                      mainMenu();
-                  });
+                let empRoleID;
+                //Forloop that compares the Role name to the query and finds the relative Id.
+                for (let i = 0; i < resRole.length; i++) {
+                    if (resRole[i].title === answer.employeeRole) {
+                        empRoleID = resRole[i].id;
+                    };
+                };
+                let empMngID;
+                //Forloop that compares the Manager/Employee name to the query and finds the relative Id.
+                for (let i = 0; i < resEmp.length; i++) {
+                    if (`${resEmp[i].first_name} ${resEmp[i].last_name}` === answer.employeeManager) {
+                        empMngID = resEmp[i].id;
+                    };
+                };
+                const query = "INSERT INTO employee SET ?";
+                connection.query(query, { 
+                    first_name: answer.employeeFirst,
+                    last_name: answer.employeeLast,
+                    role_id: empRoleID,
+                    manager_id: empMngID
+                  }, (err, res) => {
+                    if (err) throw err;
+                    console.log(`${answer.employeeFirst} has been added.`);
+                    mainMenu();
+                });
             });
         })
     })    
