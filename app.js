@@ -1,6 +1,7 @@
 const inquirer = require("inquirer");
 const mysql = require('mysql');
 const cTable = require('console.table');
+const { table } = require("console");
 
 const connection = mysql.createConnection({
     host: 'localhost',
@@ -84,36 +85,45 @@ const addDepartment = () => {
 };
 
 const addRole = () => {
-    inquirer.prompt([
-        {
-            type: "input",
-            message: "What is the title of the Role you'd like to add?",
-            name: "roleTitle"
-        },
-        {
-            type: "input",
-            message: "What will the salary be?",
-            name: "roleSalary"
-        },
-        {
-            type: "list",
-            message: "Which department will this role be for?",
-            name: "roleDep",
-            choices: checkTable("department", "name"),
-        },
-    ])
-      .then((answer) => {
-          const query = "INSERT INTO role SET ?";
-          connection.query(query, { 
-              title: answer.roleTitle, 
-              salary: answer.roleSalary, 
-              department_id: answer.roleDep
-            }, (err, res) => {
-              if (err) throw err;
-              console.log(`${answer.roleTitle} has been added.`);
-              mainMenu();
-          });
-    });
+    connection.query("SELECT department.name FROM department", (err, res) => {
+        if (err) throw err;
+        inquirer.prompt([
+            {
+                type: "input",
+                message: "What is the title of the Role you'd like to add?",
+                name: "roleTitle"
+            },
+            {
+                type: "input",
+                message: "What will the salary be?",
+                name: "roleSalary"
+            },
+            {
+                type: "list",
+                message: "Which department will this role be for?",
+                name: "roleDep",
+                choices: () => {
+                    const tableArray = [];
+                    for (let i = 0; i < res.length; i++) {
+                        tableArray.push(res[i].name);
+                    };
+                    return tableArray;
+                },
+            },
+        ])
+          .then((answer) => {
+              const query = "INSERT INTO role SET ?";
+              connection.query(query, { 
+                  title: answer.roleTitle, 
+                  salary: answer.roleSalary, 
+                  department_id: answer.roleDep
+                }, (err, res) => {
+                  if (err) throw err;
+                  console.log(`${answer.roleTitle} has been added.`);
+                  mainMenu();
+              });
+        });
+    })
 };
 
 const addEmployee = () => {
@@ -132,7 +142,7 @@ const addEmployee = () => {
                 type: "list",
                 message: "What is their role?",
                 name: "employeeRole",
-                choices: "test",
+                choices: "test"
             },
             {
                 type: "list",
@@ -154,7 +164,6 @@ const addEmployee = () => {
                   mainMenu();
               });
         });
-    })
 };
 
 // Below is the view menu and its three subroutines.
